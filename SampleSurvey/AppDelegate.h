@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Menu.h"
 
 @class RootViewController;
 

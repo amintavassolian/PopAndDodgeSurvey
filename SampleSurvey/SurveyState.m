@@ -61,7 +61,6 @@
             [self SaveToFile:@"QuestionDictionary.xml" Dictionary:_dataArray];
             NSLog(@"<<file is created successfully!>>");
         }
-        
     }
     return self;
 }
@@ -85,9 +84,9 @@
 //
 - (void) dealloc
 {
-    free(_dataArray);
-    free(_nsDataArray);
-    free(_fileName);
+    self.dataArray = nil;
+    self.nsDataArray = nil;
+    self.fileName = nil;
     // don't forget to call "super dealloc"
 	[super dealloc];
 }
@@ -256,6 +255,8 @@ bool IsFileExist(NSString* fileName)
     //check the status of the survey
     int questionNum = [self WhichQuestionToLoad:[self nsDataArray]];
     self.questionNum = questionNum;
+    if (questionNum == -1)
+        return nil;
     //find the question and answers
     for (int i=0; i < [[self nsDataArray] count]; i++)
     {
@@ -281,12 +282,13 @@ bool IsFileExist(NSString* fileName)
 {
     int questionNum;
     int questionStatus;
+    NSString* log = [NSString stringWithFormat:@"<<The number of last question is found! %f>>", questionNum];
     for (int i=0; i < [dataArray count]; i++)
     {
         if([[dataArray objectAtIndex:i] valueForKey:@"LastQuestionNumber"] != nil)
         {
             questionNum = [[[dataArray objectAtIndex:i] valueForKey:@"LastQuestionNumber"] intValue];
-            CCLOG(@"<<The number of last question is found!>>");
+            CCLOG(log);
             break;
         } 
     }
@@ -301,11 +303,7 @@ bool IsFileExist(NSString* fileName)
             }
         }
     }
-    if (questionStatus == 0)
-    {
-        return questionNum;
-    }
-    else if (questionNum < 10)
+    if (questionStatus == 0 || questionNum < 10)
     {
         return ++questionNum;
     }
@@ -313,7 +311,7 @@ bool IsFileExist(NSString* fileName)
     {
         //terminate the program
         //In this case the the progrma shouldn't commnece.
-        return 0;
+        return -1;
         
     }
 }

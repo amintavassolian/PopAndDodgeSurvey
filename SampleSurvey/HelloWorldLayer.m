@@ -126,17 +126,7 @@
 // on "dealloc" you need to release all your retained objects
 - (void) dealloc
 {
-	free(firstAnswerBtn);
-    free(secondAnswerBtn);
-    free(thirdAnswerBtn);
-    free(questionLbl);
-    free(exitBtn);
-    free(solidBackground);
-    free(answer1Lbl);
-    free(answer2Lbl);
-    free(answer3Lbl);
-    free(_surveyState);
-    free(_fileName);
+    [_surveyState release];
 	// don't forget to call "super dealloc"
 	[super dealloc];
 }
@@ -151,6 +141,7 @@
     Location = [[CCDirector sharedDirector] convertToGL: Location];
     if ([self isItActive])
     {
+        self.isItActive = NO;
         //questionLbl.string = [NSString stringWithFormat:@"x=%f y=%f", Location.x, Location.y];
         int btnWidth = 20;
         int btnHeight = 160;
@@ -181,8 +172,8 @@
             [questionLbl setString:@"Thanks!"];
             [[self surveyState] UserAnsweredToQuestionNumber:[_surveyState questionNum] WithAnswer:3];
         }
-        else if (Location.x >= exitBtn.position.x && Location.x <= exitBtn.position.x + exitBtn.contentSize.width
-             && Location.y >= exitBtn.position.y && Location.y <= exitBtn.position.y + exitBtn.contentSize.height)
+        else if (Location.x >= 380 && Location.x <= 380+ btnWidth
+             && Location.y >= 240 && Location.y <= 260 + 20)
         {
             //_surveyState.isCompleted = NO;
             [self Closing];
@@ -192,31 +183,13 @@
     }
     else
     {
-        //terminate the program
+        //beck to the menue (or previous scene)
+        [[CCDirector sharedDirector] popScene];
+        
     }
     
 }
-/*
--(BOOL) ccTouchBegan:(NSSet *)touch withEvent:(UIEvent *)event
-{
-    CCLOG(@"touched");
-    questionlBL.string = @"touched";
-    NSSet *touches = [event allTouches];
-    if ( [touches count] == 1)
-    {
-        CGPoint touchLocation = [touch locationInView: [touch view]];		
-        touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
-        NSString* res = [[NSString alloc] initWithFormat:@"x = %f y = %f", touchLocation.x, touchLocation.y];
-        questionlBL.string = res;
-        if ( touchLocation.x >= firstAnswerbTN.position.x && touchLocation.x <= touchLocation.x + firstAnswerbTN.contentSize.width
-            && touchLocation.y >= firstAnswerbTN.position.y && touchLocation.y <= touchLocation.y + firstAnswerbTN.contentSize.height)
-        {
-            questionlBL.string = @"first answer button is clicked";
-        } 
-    }
-	return YES;
-}
- */
+
 //
 //
 //
@@ -263,7 +236,7 @@
     [self removeChild:firstAnswerBtn cleanup:YES];
     [self removeChild:secondAnswerBtn cleanup:YES];
     [self removeChild:thirdAnswerBtn cleanup:YES];
-    [self removeChild:questionLbl cleanup:NO];
+    [self removeChild:questionLbl cleanup:YES];
     [self removeChild:exitBtn cleanup:YES];
     questionLbl = [CCLabelTTF labelWithString:@"Thanks" fontName: @"Marker Felt" fontSize:32];
     [questionLbl setPosition:ccp(250, 168)];
