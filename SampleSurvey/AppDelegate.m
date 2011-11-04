@@ -89,7 +89,7 @@
 #endif
 	
 	[director setAnimationInterval:1.0/60];
-	[director setDisplayFPS:YES];
+	//[director setDisplayFPS:YES];
 	
 	
 	// make the OpenGLView a child of the view controller
@@ -126,7 +126,8 @@
 	[[CCDirector sharedDirector] purgeCachedData];
 }
 
--(void) applicationDidEnterBackground:(UIApplication*)application {
+-(void) applicationDidEnterBackground:(UIApplication*)application
+{
 	[[CCDirector sharedDirector] stopAnimation];
 }
 
